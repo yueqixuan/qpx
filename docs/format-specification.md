@@ -1,8 +1,6 @@
 # The quantms.io format specification
 
-<a name="executive-summary"></a>
-
-## 1. Executive Summary
+## 1. Executive Summary {#executive-summary}
 
 The quantms.io format is a modern, scalable data format designed specifically for proteomics data analysis. It addresses the limitations of existing formats like XML-based HUPO-PSI standards (mzML, mzIdentML) and tab-delimited formats like mzTab, which struggle with large-scale datasets and advanced analytical use cases.
 
@@ -36,9 +34,7 @@ The quantms.io format is currently at version 1.0 and is primarily implemented i
 > - Replace the mzTab format, but to provide a new format that enables AI-related use cases.
 > - Replace all the software tools file formats and intermediate files, but to provide a new format that enables easy integration of the main output results with other tools.
 
-<a name="introduction"></a>
-
-## 2. Introduction
+## 2. Introduction {#introduction}
 
 The majority of formats in HUPO-PSI are based on XML format including mzML, mzIdentML making difficult to use them for large-scale, AI model technologies. Also, the previous approach to move away from XML-based approaches, mzTab "falls short" to produce a tab-delimited format that can scale with the size of the data. Here, we aim to formalize and develop a more standardized format that enables better representation of the identification and quantification results but also enables new and novel use cases for proteomics data analysis. The main use cases for the format are:
 
@@ -55,13 +51,11 @@ The majority of formats in HUPO-PSI are based on XML format including mzML, mzId
 > - Replace the mzTab format, but to provide a new format that enables AI-related use cases.
 > - Replace all the software tools file formats and intermediate files, but to provide a new format that enables easy integration of the main output results with other tools.
 
-<a name="general-data-model"></a>
-
-## 3. General data model and structure
+## 3. General data model and structure {#general-data-model}
 
 The `quantms.io` (.qms) could be seen as a **multiple view** representation of a proteomics data analysis results. Similar to other tools that produce multiple output files for their analysis, like [MaxQuant](https://www.maxquant.org/), [DIA-NN](https://github.com/vdemichev/DiaNN), [FragPipe](https://fragpipe.nesvilab.org/) or [spectronaut](https://biognosys.com/software/spectronaut/). Each view of the format can be serialized in different formats depending on the use case. The **data model** defines two main things, the **view** and how the view is **serialized**. Both views and serialization can be extended, and new views can be added on each [version](#version) of the specification.
 
-![width=80%](images/file-relation.png)
+![Quantms.io file format relationship diagram showing the connections between different data views and serialization formats](images/file-relation.png){: style="width:80%"}
 
 - The **data model view** defines the structure, the fields and properties that will be included in a view for each peptide, psms, feature or protein.
 - The **data serialization** defines the format in which the view will be serialized and what features of serialization will be supported, for example, compression, indexing, or slicing.
@@ -83,19 +77,13 @@ The `quantms.io` (.qms) could be seen as a **multiple view** representation of a
 >
 > Some of these data models fit better for some analytical methods than others, for example, the **psm view** [psm](#psm) is more suitable for data-dependent acquisition (DDA) methods, and may not be present in data-independent acquisition (DIA) methods; while the **feature view** [feature](#feature) could be generated in both DDA and DIA methods. Different expression view [differential](#differential) are only present in those experiments while absolute-expression (based on IBAQ values) is only available on datasets where comparisons are not performed between conditions.
 
-<a name="file-structure"></a>
+The `.qms` contains all the files of a quantms.io experiment. It will contain metadata files and different views of the experiments; [general-data-model](#general-data-model). {#file-structure}
 
-The `.qms` contains all the files of a quantms.io experiment. It will contain metadata files and different views of the experiments; [general-data-model](#general-data-model).
-
-<a name="common-data-structures"></a>
-
-## 4. Common data structures and formats
+## 4. Common data structures and formats {#common-data-structures}
 
 We have some concepts that are common for some outputs and would be good to define and explain them here:
 
-<a name="peptidoform"></a>
-
-### 4.1. Peptidoform
+### 4.1. Peptidoform {#peptidoform}
 
 A peptidoform is a peptide sequence with modifications. For example, the peptide sequence `PEPTIDM` with a modification of `Oxidation` would be `PEPTIDM[Oxidation]`. The peptidoform show be written using the [Proforma specification](https://github.com/HUPO-PSI/ProForma). This concept is used in the following outputs:
 
@@ -103,9 +91,7 @@ A peptidoform is a peptide sequence with modifications. For example, the peptide
 - [feature](#feature)
 - [peptide](#peptide)
 
-<a name="modifications"></a>
-
-### 4.2. Modifications
+### 4.2. Modifications {#modifications}
 
 A modification is a chemical change in the peptide sequence. Modifications can be annotated in multiple ways in `quantms.io` format:
 
@@ -156,9 +142,7 @@ Scores are associated with specific positions, allowing for:
 > - Each position can have multiple associated scores
 > - Score values are always float numbers
 
-<a name="scan"></a>
-
-### 4.3. Scan (scan number)
+### 4.3. Scan {#scan}
 
 Scan number (`scan`) aims to point to the MS/MS in a Raw, mzML, or peak list file (e.g., MGF). [mzIdentML](https://github.com/HUPO-PSI/mzIdentML), [mzTab](https://github.com/HUPO-PSI/mzTab), [USI](https://github.com/HUPO-PSI/usi), and another HUPO-PSI standardization have different ways to use and define scan `number`. Here we will use the latest definition from USI. A single `scan` point to an MS/MS in the spectra file. The `scan` is a unique identifier, and it could be a number or a string depending on the instrument.
 
@@ -178,9 +162,7 @@ The `scan` is use in the following section: [psm](#psm), [feature](#feature), [m
 >
 > Normally the scan value is only captured in the column, while the format of the scan: `nativeId`, `scan` or `index` should be captured in the metadata of the file. However, in some types of analyses we may have more than one type of scan in the same file, (e.g., when merging multiple experiments.), in this case, each scan MUST be prefixed by the type of scan. For example, `nativeId:1,1,2740,10`, `scan:43920`.
 
-<a name="identification-scores"></a>
-
-### 4.4. Identification scores
+### 4.4. Identification scores {#identification-scores}
 
 Every workflow within quantms uses different identification/quantification scores to determinate the quality of the identification or the quantification. `additional_scores` in quantms try to capture multiple scores from different workflows such as the `Comet:xcorr` or `DIA-NN:Q.Value`. Additional scores are stored as a key/value pair where the key is the name of the score (is RECOMMENDED to use HUPO-PSI MS ontology) and the value is the score value. This concept is used in the following outputs:
 
@@ -192,9 +174,7 @@ This concept is used in the following outputs:
 - [feature](#feature)
 - [peptide](#peptide)
 
-<a name="cv-terms"></a>
-
-### 4.5. Controlled vocabulary terms
+### 4.5. Controlled vocabulary terms {#cv-terms}
 
 The following views [psm](#psm), [feature](#feature), [mz](#mz) use controlled vocabularies to describe the data. The controlled vocabulary terms are used to standardize the data and make it easier to integrate with other datasets. The controlled vocabulary terms are stored as a key/value pair where the key is the name of the controlled vocabulary term and the value is the term value. This concept is used in the following outputs:
 
@@ -202,9 +182,7 @@ The following views [psm](#psm), [feature](#feature), [mz](#mz) use controlled v
 
 The name/key of the controlled vocabulary MUST be provided; the value is optional.
 
-<a name="serialization"></a>
-
-## 5. Serialization formats
+## 5. Serialization formats {#serialization}
 
 The `quantms.io` format has different serialization formats for each view. The serialization format defines how the view will be serialized and what features of serialization will be supported, for example, compression, indexing, or slicing. The following serialization formats are supported:
 
@@ -212,9 +190,7 @@ The `quantms.io` format has different serialization formats for each view. The s
 - **parquet**: Apache Parquet format.
 - **json**: JavaScript Object Notation format.
 
-<a name="parquet-format"></a>
-
-### 5.1. Parquet format
+### 5.1. Parquet format {#parquet-format}
 
 [Parquet](https://github.com/apache/parquet-format) is a columnar storage format that supports nested data. Apache Parquet is an open-source format designed for efficient data storage and retrieval. It offers high-performance compression and encoding schemes, making it well-suited for handling large volumes of complex data. Parquet is widely supported across various programming languages and analytics tools.
 
@@ -229,18 +205,14 @@ A Parquet table can be distributed across multiple compute nodes, and its key ad
 | PXD016999 | mzTab | 160 | 155/228 | 539.0019641 | 3554.52738 |
 | PXD019909 | diaNN | 1.9 | 195 | | 229.482332 |
 
-<a name="parquet-features"></a>
-
-#### Parquet features
+#### Parquet features {#parquet-features}
 
 - **Columnar Storage**: Parquet's columnar design improves compression and query performance by storing data by columns rather than rows, which reduces I/O for analytical queries that typically access only a few columns.
 - **Efficient Compression**: The format achieves better compression ratios with algorithms like Snappy, Gzip, and LZO, and uses techniques like RLE, and dictionary encoding for further optimization.
 - **Schema Evolution**: Parquet supports adding, deleting, or modifying columns without affecting existing data, making it adaptable to schema changes.
 - **Complex Data Types**: Supports nested structures and data types like arrays, maps, and structs, allowing efficient storage of complex data.
 
-<a name="parquet-slicing"></a>
-
-#### Parquet slicing
+#### Parquet slicing {#parquet-slicing}
 
 `quantms.io` supports slicing parquet files using any field when generating them.Upon storage, the files are organized into distinct folders according to the chosen slicing fields.
 
@@ -277,9 +249,7 @@ When registering parquet files to project.json [project](#project), it will be i
   ]
 ```
 
-<a name="extensions"></a>
-
-## 6. File extensions
+## 6. File extensions {#extensions}
 
 File extensions are used to identify the file type. In `quantms.io` the extensions are constructed as follows: `*.{view}.{format}` where the view is one of the well-defined views in the specification and the format is one of the serialization formats. For example:
 
@@ -292,18 +262,14 @@ File extensions are used to identify the file type. In `quantms.io` the extensio
 >
 > In `quantms.io` we use the UUID to identify the project and the files `{PREFIX}-{UUID}.{view}.{format}`, it is optional, but for most of the code examples we will use it. _uuids_: A Universally Unique Identifier (UUID) URN Namespace, as defined in RFC 4122, provides a standardized method for generating globally unique identifiers across various systems and applications. The UUID URN Namespace ensures that each generated UUID is highly unlikely to collide with any other UUID, even when produced by different entities and systems.
 
-<a name="version"></a>
-
-## 7. Versioning
+## 7. Versioning {#version}
 
 The structure of the version is as follows `{major release}.{minor update}`: The current `quantms.io` specification version is: **1.0**
 
 - All views ([psm](#psm), [feature](#feature), [pg](#pg)) and serialization formats will have a version number in the way: `quantmsio_version: {}`. This will help to identify the version of the specification used to generate the file.
 - Major release changes will be backward incompatible, while minor updates will be backward compatible.
 
-<a name="software"></a>
-
-## 8. Software provider
+## 8. Software provider {#software}
 
 The data within quantms.io is mainly generated from [quantms workflow](https://github.com/bigbio/quantms). However, the format is open and can be used by any software provider that wants to generate the data in this format. The software provider and the version of the software used to generate the data will be stored in the project view [project](#project) as:
 
@@ -314,9 +280,7 @@ The data within quantms.io is mainly generated from [quantms workflow](https://g
   }
 ```
 
-<a name="project"></a>
-
-## 9. Project quantms.io
+## 9. Project quantms.io {#project}
 
 The project view is the file that stores the metadata of the entire `quantms.io` project. The project view is a JSON file that contains the following fields:
 
@@ -340,7 +304,7 @@ The project view is the file that stores the metadata of the entire `quantms.io`
 | `acquisition_properties`     | Properties of the data acquisition methods | list[key/value]    |
 | `quantms_files`              | Files related to quantMS analysis          | list[key/value]    |
 | `quantmsio_version`          | Version of the `quantms.io`                | string             |
-| `software_provider`          | The <<software>> used to generate the data | key/value          |
+| `software_provider`          | The `<software>` used to generate the data | key/value          |
 | `comments`                   | Additional comments or notes               | list[string]       |
 
 - key/value pair object: The key/value pairs are used to store the acquisition properties, and the quantms files.
@@ -499,15 +463,11 @@ Example:
 }
 ```
 
-<a name="sdrf"></a>
-
-## 10. SDRF view
+## 10. SDRF view {#sdrf}
 
 The Proteomics Sample and Data Relationship Format ([SDRF](https://github.com/bigbio/proteomics-sample-metadata)) is a tab-delimited file format that describes the relationship between samples, data files, and the experimental factors. The SDRF is a key file in the proteomics data analysis workflow as it describes the relationship between the samples and the data files. The specification of the SDRF can be found in the [SDRF GitHub repository](https://github.com/bigbio/proteomics-sample-metadata).
 
-<a name="absolute"></a>
-
-## 11. Absolute quantification view
+## 11. Absolute quantification view {#absolute}
 
 Absolute quantification is the process of determining the absolute/baseline amount of a target protein in a sample. In proteomics, the main computational method to determine the absolute quantification is the intensity-based [absolute quantification (iBAQ) method](https://www.nature.com/articles/nature11848).
 
@@ -564,20 +524,16 @@ We _RECOMMEND_ including the following properties in the header:
 
 Please check also the differential expression example for more information: [differential](#differential)
 
-<a name="anndata"></a>
-
-## 12. AnnData view
+## 12. AnnData view {#anndata}
 
 The AnnData view is a collection of multiple AE files. Its obs represents the samples, var represents the proteins, and the conditions are stored in obs.
 
 - Retrieve all the proteins for a given sample.
 - Obtain all samples under the same condition.
 
-![](images/anndata.png)
+![AnnData structure diagram showing how samples (obs), proteins (var), and conditions are organized in the data matrix](images/anndata.png)
 
-<a name="differential"></a>
-
-## 13. Differential expression view
+## 13. Differential expression view {#differential}
 
 The differential expression view is a tab-delimited file format that contains the differential expression results between two contrasts, with the corresponding fold changes and p-values. The differential expression view is a key file in the proteomics data analysis workflow as it describes the differential expression between two conditions.
 
@@ -638,9 +594,7 @@ We suggest including the following properties in the header:
 - `factor_value`: The factor values used in the analysis (e.g. `phenotype`)
 - `adj_pvalue`: The FDR threshold used to filter the protein lists (e.g. `adj_pvalue < 0.05`)
 
-<a name="peptide-views"></a>
-
-## 14. Peptide-based Views: psm, feature and peptide
+## 14. Peptide-based Views: psm, feature and peptide {#peptide-views}
 
 Multiple peptide-level views are available for the `quantms.io` format. The views are the following:
 
@@ -650,9 +604,7 @@ Multiple peptide-level views are available for the `quantms.io` format. The view
 
 - [peptide](#peptide): Peptide View—The peptide view is a summary of quantified peptides by samples, the aim of this representation is to provide a simple summary of the number of peptides and their given quantity for each protein on each sample. This view is useful for quick visualization and data retrieval.
 
-<a name="psm"></a>
-
-### 14.1. Peptide spectrum match (psm) view
+### 14.1. Peptide spectrum match (psm) view {#psm}
 
 Peptide spectrum matches (psms) are the results of the **identification** of peptides in mass spectrometry data. PSMs are mainly the results of peptide identification by database search engines on data-dependent acquisition (DDA) experiments.
 
@@ -663,9 +615,7 @@ Peptide spectrum matches (psms) are the results of the **identification** of pep
 - We included in the psm view the spectrum information as optional for those use cases that want to have fast access to peptide information + spectrum data, for example, clustering or intensity prediction
 - Fast and easy visualization of PSM information.
 
-<a name="psm-fields"></a>
-
-#### PSM fields
+#### PSM fields {#psm-fields}
 
 The following table presents all the fields and attributes for each PSM (Peptide Spectrum Match) entry in the psm_file. Some fields are shared between the [psm](#psm), [feature](#feature) and [peptide](#peptide) views.
 
@@ -676,7 +626,9 @@ For reference, we've included the corresponding field names in common proteomics
 - **DIA-NN**: Fields from report.tsv
 - **mzTab**: Fields from PSM section
 
-**Core Identification Fields** (shared with features and peptides)
+##### Core Identification Fields {#psm-core-fields}
+
+**Note**: These fields are shared with features and peptides.
 
 | **Field**                     | **Description**                                                                                                                         | **Type**                                             | **DIA-NN**                | **FragPipe**     | **MaxQuant**      | **mzTab**                                     |
 | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------- | ---------------- | ----------------- | --------------------------------------------- |
@@ -695,13 +647,15 @@ For reference, we've included the corresponding field names in common proteomics
 | `additional_scores`           | List of structures, each structure contains two fields: name and value.                                                                 | array[struct{name: string, value: float32}]          | DIA-NN Scores             | FragPipe Scores  | MaxQuant Scores   | search_engine_score                           |
 | `cv_params`                   | Optional list of CV parameters for additional metadata [psm-cv-params](#psm-cv-params)                                                  | array[struct{cv_name:string, cv_value:string}], null | -                         | -                | -                 | -                                             |
 
-**Protein Mapping Fields**
+##### Protein Mapping Fields {#psm-protein-fields}
 
 | **Field**            | **Description**                                                 | **Type**            | **DIA-NN**  | **FragPipe** | **MaxQuant** | **mzTab** |
 | -------------------- | --------------------------------------------------------------- | ------------------- | ----------- | ------------ | ------------ | --------- |
 | `protein_accessions` | Protein accessions of all the proteins that the peptide maps to | array[string], null | Protein.Ids | -            | Proteins     | accession |
 
-**Spectral Data Fields** (optional)
+##### Spectral Data Fields {#psm-spectral-fields}
+
+**Note**: These fields are optional for use cases requiring spectrum-level information.
 
 | **Field**            | **Description**                                                                                             | **Type**            | **DIA-NN** | **FragPipe** | **MaxQuant** | **mzTab** |
 | -------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------- | ---------- | ------------ | ------------ | --------- |
@@ -713,9 +667,7 @@ For reference, we've included the corresponding field names in common proteomics
 | `ion_type_array`     | Array of fragment ion type annotations (e.g., b, y, a) for the spectrum used for the peptide spectrum match | array[string], null | -          | -            | -            | -         |
 | `ion_mobility_array` | Array of fragment ion mobility values for the spectrum used for the peptide spectrum match                  | array[float], null  | -          | -            | -            | -         |
 
-<a name="additional-scores"></a>
-
-#### Additional scores
+#### Additional scores {#additional-scores}
 
 Additional scores are stored as a list of key-value pairs, where the key is the name of the score (is RECOMMENDED to use HUPO-PSI MS ontology) and the value is the score value. Additional scores are mainly the search engine and protein scores that want to be added at PSM level. Some RECOMMENDED scores are:
 
@@ -731,9 +683,7 @@ Additional scores are stored as a list of key-value pairs, where the key is the 
 >
 > - The `mz_array` and `intensity_array` are arrays of the same length, where the `mz_array` contains the m/z values and the `intensity_array` contains the intensity values; and the size of the arrays is the same as the number of peaks in the spectrum. These three columns could help use cases like AI/ML that need the spectrum information for a given psm. We RECOMMEND using for spectra data the mz view ([mz](#mz)), where the spectra are stored in a more efficient way.
 
-<a name="psm-cv-params"></a>
-
-#### Psm CV parameters
+#### Psm CV parameters {#psm-cv-params}
 
 Cv params are a key-value pairs list that allows to store additional information for a given psm. For example, it could be used to store the following, mzIdentML information:
 
@@ -744,11 +694,7 @@ In quantms we use `consensus_support` where the value is the number of search en
 
 The cv_params are stored as a list of key-value pairs, where the key is the name of the parameter, and the value is the value of the parameter. This is similar to the CVParams in the mzIdentML format. Please, be aware that search engine scores should be stored for psms in the column `additional_scores`.
 
-<a name="peptidoform"></a>
-
-<a name="psm-file-metadata"></a>
-
-#### Psm file metadata
+#### Psm file metadata {#psm-file-metadata}
 
 For parquet psm files, the metadata of the file including quantms.io version and other metadata should be stored in the file. The metadata should be stored in the file as a key/value pair. The metadata should include the following fields:
 
@@ -805,19 +751,15 @@ pq.write_table(table, 'psm_data.parquet', metadata=file_metadata)
 >
 > Parquet files don't have a specific limit for metadata size, but practical constraints exist based on your system's memory, processing capabilities, and file management practices. The Parquet metadata, which is stored in the file's footer, includes information like schema, column statistics, and data offsets. The metadata is loaded into memory when the file is read, so large metadata can impact performance. For large metadata, consider storing the metadata in a separate file or database and linking to it from the Parquet file.
 
-<a name="psm-global-qvalue"></a>
-
-#### Psm global q-value
+#### Psm global q-value {#psm-global-qvalue}
 
 The global q-value represents the q-value at the level of the experiment. In OpenMS this is the PSM q-value that is by default global at the level of the experiment and the run. In DIA-NN, it represents `Global.Q.Value`. At the run level, the `Q.Value` will be collected by `additional_scores`.
 
-#### Format
+#### PSM Format Specification {#psm-format}
 
 The psm view can be found in [psm.avsc](psm.avsc).
 
-<a name="feature"></a>
-
-### 14.2. Peptide feature view
+### 14.2. Peptide feature view {#feature}
 
 The peptide feature view (peptide features) aims to cover detail on quantified peptide information level at the **msrun level**, including peptide intensity in relation to the msrun and sample metadata. The `feature parquet file` is a parquet file that contains the details of the peptides quantified in the experiment and sample.
 
@@ -876,9 +818,7 @@ The following table presents the fields needed to describe each feature in quant
 >
 > TODO: We have to decide if we want to have one condition as anchor that can be used to understand better the experiment.
 
-<a name="intensities"></a>
-
-#### Intensities
+#### Intensities {#intensities}
 
 We capture intensity values for each `feature` or `protein group` on a given `reference_file_name`. The intensity data is structured into two complementary fields:
 
@@ -938,21 +878,15 @@ additional_intensities: [
 
 This design separates experimental design aspects (channels/samples) from data processing aspects (normalization/algorithms), providing clear semantics for both data producers and consumers.
 
-<a name="scan"></a>
-
-<a name="diann-scan"></a>
-
-#### DIANN scan
+#### DIANN scan {#diann-scan}
 
 The `DIA-NN` scan is a string that contains the scan number of the MS2 used to identify the peptide. We use the `rt` field and the mzML information to get that number.
 
-#### Format
+#### Feature Format Specification {#feature-format}
 
 The feature view can be found in [feature.avsc](feature.avsc).
 
-<a name="peptide"></a>
-
-### 14.3. Peptide summary view
+### 14.3. Peptide summary view {#peptide}
 
 The peptide summary view aims to cover detail on peptides quantified in the experiment and sample. A peptide could be a modified peptide (sequence with modifications) or non-modified peptide (sequence with no modifications) depending on the use case and the granularity of the data. The peptide view is a tab-delimited file format that claims to represent the peptides quantified in the experiment.
 
@@ -976,22 +910,18 @@ Some of the fields are shared between the [psm](#psm) and [feature](#feature) vi
 | `sample_accession` | The sample accession in the SDRF, which column is called `source name`                                                   | string, null                                     |
 | `abundance`        | The peptide abundance in the given sample accession                                                                      | float32, null                                    |
 
-#### Format
+#### Peptide Format Specification {#peptide-format}
 
 The peptide view can be found in [peptide.avsc](peptide.avsc).
 
-<a name="protein"></a>
-
-## 15. Protein views: Protein groups and Protein summary
+## 15. Protein views: Protein groups and Protein summary {#protein}
 
 We have two main reports for protein information.
 
 - The [pg](#pg) report is the output of the quantitative tool including quantms, MaxQuant or DIA-NN.
 - The [proteinsummary](#proteinsummary) is a protein summary is a summary of the protein quantified by samples.
 
-<a name="pg"></a>
-
-### 15.1. Protein group view
+### 15.1. Protein group view {#pg}
 
 The protein group view is a tabular file that contains the details of the protein groups identified and quantified. The protein group is similar to the outputs of multiple tools such as MaxQuant, DIA-NN, and others.
 
@@ -1022,15 +952,11 @@ The file defines the relation between a protein groups and the raw file that con
 | `contaminant`            | Contaminant indicator                                                                                                                                                            | int32                       | -                        | -                                  | Potential contaminant                                        |
 | `additional_scores`      | Additional scores and metrics                                                                                                                                                    | array[struct]               | -                        | -                                  | Score, Sequence coverage [%], Mol. weight [kDa], MS/MS count |
 
-<a name="protein_additional_scores"></a>
-
-#### protein additional scores
+#### protein additional scores {#protein_additional_scores}
 
 At the protein level, additional scores should be store for each given protein group. The additional scores are stored as a list of key-value pairs, where the key is the name of the score (is RECOMMENDED to use HUPO-PSI MS ontology) and the value is an array of float32 values where the index of values matches to the index on the `pg_accessions` field. Additional scores are mainly the search engine and protein scores that want to be added at the protein group level.
 
-<a name="proteinsummary"></a>
-
-## 16. Protein view
+## 16. Protein view {#proteinsummary}
 
 The protein view is a report of the proteins identified/quantified in the experiment. It doesn't contain major information about the inference of the protein group, but it contains the protein abundance and the protein identification scores.
 
@@ -1050,13 +976,11 @@ The protein view is a report of the proteins identified/quantified in the experi
 | `number_psms`            | The total number of peptide spectrum matches                       | null, integer                                                                                                                          |
 | `number_unique_peptides` | The total number of unique peptides                                | null, integer                                                                                                                          |
 
-#### Format
+#### Protein Format Specification {#protein-format}
 
 The protein view can be found in [protein.avsc](protein.avsc).
 
-<a name="mz"></a>
-
-## 17. Mass spectra view
+## 17. Mass spectra view {#mz}
 
 The mass spectra view is a tabular file that contains the details of the mass spectra identified and quantified. This view is based on [mz_parquet](https://github.com/lazear/mz_parquet) format developed by Michael Lazear. The mz_parquet format is a parquet-based format that stores the mass spectra information in a columnar format.
 
@@ -1082,6 +1006,6 @@ The mass spectra view is a tabular file that contains the details of the mass sp
 | `intensity`            | array[float]                                     | List of intensity values corresponding to the m/z values                                                                                                                                                                      |
 | `cv_params`            | array[struct{name: string, value: string}], null | Optional list of CV parameters for additional metadata                                                                                                                                                                        |
 
-#### Format
+#### Mass Spectra Format Specification {#mz-format}
 
 The mass spectra view can be found in [mz.avsc](mz.avsc).

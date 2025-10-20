@@ -22,11 +22,11 @@ The `transform` command group provides tools for processing and transforming qua
 
 Convert iBAQ absolute expression data to quantms.io format.
 
-### Description
+### Description {#ae-description}
 
 This command transforms iBAQ (intensity-Based Absolute Quantification) data into the standardized quantms.io absolute expression format. It integrates protein quantification with sample metadata from SDRF files.
 
-### Parameters
+### Parameters {#ae-parameters}
 
 | Parameter           | Type   | Required | Default | Description                             |
 | ------------------- | ------ | -------- | ------- | --------------------------------------- |
@@ -38,9 +38,9 @@ This command transforms iBAQ (intensity-Based Absolute Quantification) data into
 | `--output-prefix`   | String | No       | -       | Prefix for output files                 |
 | `--delete-existing` | Flag   | No       | False   | Delete existing files in output folder  |
 
-### Usage Examples
+### Usage Examples {#ae-examples}
 
-#### Basic Example
+#### Basic Example {#ae-example-basic}
 
 ```bash
 quantmsioc transform ae \
@@ -49,7 +49,7 @@ quantmsioc transform ae \
     --output-folder ./output
 ```
 
-#### With Project Metadata
+#### With Project Metadata {#ae-example-metadata}
 
 ```bash
 quantmsioc transform ae \
@@ -61,7 +61,7 @@ quantmsioc transform ae \
     --delete-existing
 ```
 
-#### Filter Specific Proteins
+#### Filter Specific Proteins {#ae-example-filter}
 
 ```bash
 quantmsioc transform ae \
@@ -71,7 +71,7 @@ quantmsioc transform ae \
     --output-folder ./output
 ```
 
-### Input File Formats
+### Input File Formats {#ae-input-formats}
 
 **iBAQ File**: Tab-separated file with protein accessions and iBAQ intensities
 
@@ -83,13 +83,13 @@ Q67890       500000     480000     520000
 
 **SDRF File**: Standard PRIDE SDRF format with sample metadata
 
-### Output Files
+### Output Files {#ae-output}
 
 - **Output**: `{output-prefix}-{uuid}.absolute.parquet`
 - **Format**: Parquet file containing absolute expression quantification
 - **Schema**: Conforms to quantms.io absolute expression specification
 
-### Common Issues
+### Common Issues {#ae-issues}
 
 **Issue**: Mismatched sample names between iBAQ and SDRF
 
@@ -99,7 +99,7 @@ Q67890       500000     480000     520000
 
 - **Solution**: Provide `--protein-file` to filter and validate protein IDs
 
-### Best Practices
+### Best Practices {#ae-best-practices}
 
 - Always provide project metadata file when available for better data provenance
 - Use `--delete-existing` flag carefully to avoid accidental data loss
@@ -112,11 +112,11 @@ Q67890       500000     480000     520000
 
 Convert MSstats differential expression data to quantms.io format.
 
-### Description
+### Description {#differential-description}
 
 Transforms differential expression analysis results from MSstats into the standardized quantms.io differential expression format. Supports FDR-based filtering and protein-specific subsetting.
 
-### Parameters
+### Parameters {#differential-parameters}
 
 | Parameter           | Type   | Required | Default | Description                             |
 | ------------------- | ------ | -------- | ------- | --------------------------------------- |
@@ -130,9 +130,9 @@ Transforms differential expression analysis results from MSstats into the standa
 | `--delete-existing` | Flag   | No       | False   | Delete existing files in output folder  |
 | `--verbose`         | Flag   | No       | False   | Enable verbose logging                  |
 
-### Usage Examples
+### Usage Examples {#differential-examples}
 
-#### Basic Example
+#### Basic Example {#differential-example-basic}
 
 ```bash
 quantmsioc transform differential \
@@ -141,7 +141,7 @@ quantmsioc transform differential \
     --output-folder ./output
 ```
 
-#### With Custom FDR Threshold
+#### With Custom FDR Threshold {#differential-example-fdr}
 
 ```bash
 quantmsioc transform differential \
@@ -153,7 +153,7 @@ quantmsioc transform differential \
     --verbose
 ```
 
-#### With Project Metadata
+#### With Project Metadata {#differential-example-metadata}
 
 ```bash
 quantmsioc transform differential \
@@ -165,7 +165,7 @@ quantmsioc transform differential \
     --delete-existing
 ```
 
-### Input File Format
+### Input File Format {#differential-input-format}
 
 **MSstats File**: CSV file with comparison results
 
@@ -175,13 +175,13 @@ P12345,Condition2-Condition1,2.5,0.3,8.33,10,0.0001,0.001
 Q67890,Condition2-Condition1,-1.8,0.4,-4.5,10,0.002,0.01
 ```
 
-### Output Files
+### Output Files {#differential-output}
 
 - **Output**: `{output-prefix}-{uuid}.differential.parquet`
 - **Format**: Parquet file containing differential expression results
 - **Schema**: Conforms to quantms.io differential expression specification
 
-### Common Issues
+### Common Issues {#differential-issues}
 
 **Issue**: No significant results after FDR filtering
 
@@ -191,7 +191,7 @@ Q67890,Condition2-Condition1,-1.8,0.4,-4.5,10,0.002,0.01
 
 - **Solution**: Process comparisons in batches or increase available memory
 
-### Best Practices
+### Best Practices {#differential-best-practices}
 
 - Use FDR threshold of 0.05 or lower for publication-quality results
 - Enable verbose mode to monitor filtering statistics
@@ -204,11 +204,11 @@ Q67890,Condition2-Condition1,-1.8,0.4,-4.5,10,0.002,0.01
 
 Map gene information from FASTA to parquet format.
 
-### Description
+### Description {#gene-description}
 
 Maps gene names and information from a FASTA file to protein identifications in quantms.io PSM or feature files. This command enriches protein data with gene-level metadata extracted from FASTA headers.
 
-### Parameters
+### Parameters {#gene-parameters}
 
 | Parameter         | Type    | Required | Default | Description                                  |
 | ----------------- | ------- | -------- | ------- | -------------------------------------------- |
@@ -219,9 +219,9 @@ Maps gene names and information from a FASTA file to protein identifications in 
 | `--partitions`    | String  | No       | -       | Fields for splitting files (comma-separated) |
 | `--species`       | String  | No       | `human` | Species name                                 |
 
-### Usage Examples
+### Usage Examples {#gene-examples}
 
-#### Basic Example
+#### Basic Example {#gene-example-basic}
 
 ```bash
 quantmsioc transform gene \
@@ -230,7 +230,7 @@ quantmsioc transform gene \
     --output-folder ./output
 ```
 
-#### With Partitioning
+#### With Partitioning {#gene-example-partition}
 
 ```bash
 quantmsioc transform gene \
@@ -242,13 +242,13 @@ quantmsioc transform gene \
     --species human
 ```
 
-### Output Files
+### Output Files {#gene-output}
 
 - **Output**: Enhanced parquet file(s) with gene information
 - **Format**: Parquet file in output folder
 - **Added Fields**: Gene names and metadata from FASTA headers
 
-### Best Practices
+### Best Practices {#gene-best-practices}
 
 - Use species-specific FASTA files for accurate gene annotation
 - Adjust `--file-num` based on available memory for large files
@@ -260,11 +260,11 @@ quantmsioc transform gene \
 
 Convert feature data to iBAQ format.
 
-### Description
+### Description {#ibaq-description}
 
 Transforms feature-level quantification data into iBAQ (intensity-Based Absolute Quantification) format. This command integrates feature quantification with sample metadata from SDRF files to generate iBAQ values.
 
-### Parameters
+### Parameters {#ibaq-parameters}
 
 | Parameter         | Type   | Required | Default | Description                          |
 | ----------------- | ------ | -------- | ------- | ------------------------------------ |
@@ -273,9 +273,9 @@ Transforms feature-level quantification data into iBAQ (intensity-Based Absolute
 | `--output-folder` | Path   | Yes      | -       | Output directory for generated files |
 | `--output-prefix` | String | No       | `ibaq`  | Prefix for output files              |
 
-### Usage Examples
+### Usage Examples {#ibaq-examples}
 
-#### Basic Example
+#### Basic Example {#ibaq-example-basic}
 
 ```bash
 quantmsioc transform ibaq \
@@ -284,7 +284,7 @@ quantmsioc transform ibaq \
     --output-folder ./output
 ```
 
-#### With Custom Prefix
+#### With Custom Prefix {#ibaq-example-prefix}
 
 ```bash
 quantmsioc transform ibaq \
@@ -294,13 +294,13 @@ quantmsioc transform ibaq \
     --output-prefix ibaq_quantification
 ```
 
-### Output Files
+### Output Files {#ibaq-output}
 
 - **Output**: `{output-prefix}-{uuid}.ibaq.parquet`
 - **Format**: Parquet file containing iBAQ quantification values
 - **Content**: Protein-level iBAQ values per sample
 
-### Best Practices
+### Best Practices {#ibaq-best-practices}
 
 - Ensure feature file contains all necessary quantification data
 - Verify SDRF metadata matches sample identifiers in feature file
@@ -312,11 +312,11 @@ quantmsioc transform ibaq \
 
 Map spectrum information from mzML to parquet format.
 
-### Description
+### Description {#spectra-description}
 
 Enriches PSM or feature data with additional spectral information extracted from mzML files. This command maps spectrum metadata and peak information to the corresponding peptide-spectrum matches.
 
-### Parameters
+### Parameters {#spectra-parameters}
 
 | Parameter          | Type    | Required | Default | Description                                  |
 | ------------------ | ------- | -------- | ------- | -------------------------------------------- |
@@ -326,9 +326,9 @@ Enriches PSM or feature data with additional spectral information extracted from
 | `--file-num`       | Integer | No       | 10      | Number of rows to read in each batch         |
 | `--partitions`     | String  | No       | -       | Fields for splitting files (comma-separated) |
 
-### Usage Examples
+### Usage Examples {#spectra-examples}
 
-#### Basic Example
+#### Basic Example {#spectra-example-basic}
 
 ```bash
 quantmsioc transform spectra \
@@ -337,7 +337,7 @@ quantmsioc transform spectra \
     --output-folder ./output
 ```
 
-#### With Batch Processing and Partitioning
+#### With Batch Processing and Partitioning {#spectra-example-batch}
 
 ```bash
 quantmsioc transform spectra \
@@ -348,13 +348,13 @@ quantmsioc transform spectra \
     --partitions reference_file_name
 ```
 
-### Output Files
+### Output Files {#spectra-output}
 
 - **Output**: Enhanced PSM/feature parquet file(s) with spectral information
 - **Format**: Parquet file in output folder
 - **Added Fields**: Spectrum metadata and peak information from mzML files
 
-### Best Practices
+### Best Practices {#spectra-best-practices}
 
 - Ensure mzML files are in the specified directory with correct naming
 - Adjust `--file-num` based on available memory and file size
@@ -366,11 +366,11 @@ quantmsioc transform spectra \
 
 Map feature data to latest UniProt version.
 
-### Description
+### Description {#uniprot-description}
 
 Maps peptides and features to the latest UniProt protein database using a FASTA file. This command updates protein identifications to match current UniProt accessions and annotations.
 
-### Parameters
+### Parameters {#uniprot-parameters}
 
 | Parameter         | Type   | Required | Default | Description                          |
 | ----------------- | ------ | -------- | ------- | ------------------------------------ |
@@ -379,9 +379,9 @@ Maps peptides and features to the latest UniProt protein database using a FASTA 
 | `--output-folder` | Path   | Yes      | -       | Output directory for generated files |
 | `--output-prefix` | String | No       | -       | Prefix for output files              |
 
-### Usage Examples
+### Usage Examples {#uniprot-examples}
 
-#### Basic Mapping
+#### Basic Mapping {#uniprot-example-basic}
 
 ```bash
 quantmsioc transform uniprot \
@@ -390,7 +390,7 @@ quantmsioc transform uniprot \
     --output-folder ./output
 ```
 
-#### With Custom Prefix
+#### With Custom Prefix {#uniprot-example-prefix}
 
 ```bash
 quantmsioc transform uniprot \
@@ -400,13 +400,13 @@ quantmsioc transform uniprot \
     --output-prefix feature_updated
 ```
 
-### Output Files
+### Output Files {#uniprot-output}
 
 - **Output**: `{output-prefix}-{uuid}.feature.parquet`
 - **Format**: Parquet file with updated UniProt mappings
 - **Content**: Feature data mapped to latest UniProt protein identifications
 
-### Best Practices
+### Best Practices {#uniprot-best-practices}
 
 - Use the latest UniProt FASTA file for most current annotations
 - Run this command when updating to a new UniProt release
@@ -418,11 +418,11 @@ quantmsioc transform uniprot \
 
 Merge multiple AE files into a file in AnnData format.
 
-### Description
+### Description {#anndata-description}
 
 Combines multiple absolute expression (AE) files from a directory into a single AnnData object (H5AD format). This command is useful for integrating data from multiple experiments for downstream analysis with scanpy or other Python-based tools.
 
-### Parameters
+### Parameters {#anndata-parameters}
 
 | Parameter         | Type   | Required | Default | Description                          |
 | ----------------- | ------ | -------- | ------- | ------------------------------------ |
@@ -430,9 +430,9 @@ Combines multiple absolute expression (AE) files from a directory into a single 
 | `--output-folder` | Path   | Yes      | -       | Output directory for generated files |
 | `--output-prefix` | String | No       | -       | Prefix for output files              |
 
-### Usage Examples
+### Usage Examples {#anndata-examples}
 
-#### Basic Example
+#### Basic Example {#anndata-example-basic}
 
 ```bash
 quantmsioc transform anndata \
@@ -440,7 +440,7 @@ quantmsioc transform anndata \
     --output-folder ./output
 ```
 
-#### With Custom Prefix
+#### With Custom Prefix {#anndata-example-prefix}
 
 ```bash
 quantmsioc transform anndata \
@@ -449,7 +449,7 @@ quantmsioc transform anndata \
     --output-prefix merged_ae
 ```
 
-### Output Files
+### Output Files {#anndata-output}
 
 - **Output**: `{output-prefix}-{uuid}.h5ad`
 - **Format**: AnnData H5AD file (HDF5-based format)
@@ -458,14 +458,14 @@ quantmsioc transform anndata \
   - `obs`: Sample metadata
   - `var`: Protein metadata
 
-### Use Cases
+### Use Cases {#anndata-use-cases}
 
 - Integration with scanpy for dimensionality reduction and clustering
 - Compatibility with Python machine learning libraries
 - Multi-experiment data integration
 - Cross-study meta-analysis
 
-### Best Practices
+### Best Practices {#anndata-best-practices}
 
 - Ensure all AE files in the directory have consistent format
 - Validate sample metadata consistency before merging

@@ -1,6 +1,6 @@
 # quantms.io
 
-**A standardized format and toolkit for mass spectrometry proteomics data**
+_A standardized format and toolkit for mass spectrometry proteomics data_
 
 [![Python application](https://github.com/bigbio/quantms.io/actions/workflows/python-app.yml/badge.svg?branch=dev)](https://github.com/bigbio/quantms.io/actions/workflows/python-app.yml)
 [![Upload Python Package](https://github.com/bigbio/quantms.io/actions/workflows/python-publish.yml/badge.svg)](https://github.com/bigbio/quantms.io/actions/workflows/python-publish.yml)

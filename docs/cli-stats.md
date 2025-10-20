@@ -19,11 +19,11 @@ All statistics commands are accessed through the `analyze` subcommand:
 
 Generate comprehensive statistics for a project's absolute expression data.
 
-### Description
+### Description {#project-ae-description}
 
 Analyzes both absolute expression (AE) and PSM data to generate a complete statistical summary. This command is useful for quality control and generating summary statistics for publications or reports.
 
-### Parameters
+### Parameters {#project-ae-parameters}
 
 | Parameter         | Type | Required | Default | Description                                                     |
 | ----------------- | ---- | -------- | ------- | --------------------------------------------------------------- |
@@ -31,9 +31,9 @@ Analyzes both absolute expression (AE) and PSM data to generate a complete stati
 | `--parquet-path`  | Path | Yes      | -       | PSM parquet file path                                           |
 | `--save-path`     | Path | No       | -       | Output statistics file path (if not provided, prints to stdout) |
 
-### Usage Examples
+### Usage Examples {#project-ae-examples}
 
-#### Print to Console
+#### Print to Console {#project-ae-example-console}
 
 ```bash
 quantmsioc stats analyze project-ae \
@@ -41,7 +41,7 @@ quantmsioc stats analyze project-ae \
     --parquet-path ./output/psm.parquet
 ```
 
-#### Save to File
+#### Save to File {#project-ae-example-file}
 
 ```bash
 quantmsioc stats analyze project-ae \
@@ -50,7 +50,7 @@ quantmsioc stats analyze project-ae \
     --save-path ./reports/project_statistics.txt
 ```
 
-### Output Format
+### Output Format {#project-ae-output}
 
 The command generates a text report with the following metrics:
 
@@ -64,7 +64,7 @@ iBAQ Number of proteins: 2,547
 iBAQ Number of samples: 24
 ```
 
-### Metrics Explained
+### Metrics Explained {#project-ae-metrics}
 
 | Metric                      | Description                         |
 | --------------------------- | ----------------------------------- |
@@ -76,14 +76,14 @@ iBAQ Number of samples: 24
 | **iBAQ Number of proteins** | Proteins with iBAQ quantification   |
 | **iBAQ Number of samples**  | Samples with iBAQ data              |
 
-### Use Cases
+### Use Cases {#project-ae-use-cases}
 
 - **Quality Control**: Verify expected number of identifications
 - **Publication Reporting**: Generate summary statistics for methods sections
 - **Data Completeness**: Assess coverage across samples
 - **Comparative Analysis**: Compare statistics across different processing pipelines
 
-### Best Practices
+### Best Practices {#project-ae-best-practices}
 
 - Run statistics after data processing to verify completeness
 - Compare statistics with expected values based on sample type and instrument
@@ -96,27 +96,27 @@ iBAQ Number of samples: 24
 
 Generate statistics for PSM (Peptide-Spectrum Match) data.
 
-### Description
+### Description {#psm-description}
 
 Analyzes PSM data to generate detailed statistics about identifications, including protein, peptide, and PSM counts.
 
-### Parameters
+### Parameters {#psm-parameters}
 
 | Parameter        | Type | Required | Default | Description                                                     |
 | ---------------- | ---- | -------- | ------- | --------------------------------------------------------------- |
 | `--parquet-path` | Path | Yes      | -       | PSM parquet file path                                           |
 | `--save-path`    | Path | No       | -       | Output statistics file path (if not provided, prints to stdout) |
 
-### Usage Examples
+### Usage Examples {#psm-examples}
 
-#### Print to Console
+#### Print to Console {#psm-example-console}
 
 ```bash
 quantmsioc stats analyze psm \
     --parquet-path tests/examples/parquet/psm.parquet
 ```
 
-#### Save to File
+#### Save to File {#psm-example-file}
 
 ```bash
 quantmsioc stats analyze psm \
@@ -124,7 +124,7 @@ quantmsioc stats analyze psm \
     --save-path ./reports/psm_statistics.txt
 ```
 
-### Output Format
+### Output Format {#psm-output}
 
 ```
 Number of proteins: 1,823
@@ -134,7 +134,7 @@ Number of PSMs: 45,892
 Number of msruns: 12
 ```
 
-### Metrics Explained
+### Metrics Explained {#psm-metrics}
 
 | Metric                     | Description                                      |
 | -------------------------- | ------------------------------------------------ |
@@ -144,7 +144,7 @@ Number of msruns: 12
 | **Number of PSMs**         | Total peptide-spectrum matches                   |
 | **Number of msruns**       | Number of MS runs contributing data              |
 
-### Understanding the Metrics
+### Understanding the Metrics {#psm-understanding}
 
 #### Peptide vs Peptidoform
 
@@ -159,14 +159,14 @@ Typical ratios for quality data:
 - **Peptidoforms per peptide**: 1-3 (depends on PTM analysis)
 - **Peptides per protein**: 3-20 (depends on protein abundance and coverage)
 
-### Use Cases
+### Use Cases {#psm-use-cases}
 
 - **Quality Assessment**: Verify identification rates
 - **Method Optimization**: Compare different search parameters
 - **Replication Analysis**: Assess consistency across runs
 - **FDR Validation**: Ensure sufficient identifications after filtering
 
-### Best Practices
+### Best Practices {#psm-best-practices}
 
 - Compare PSM counts before and after FDR filtering
 - Monitor peptidoform counts to assess modification analysis quality

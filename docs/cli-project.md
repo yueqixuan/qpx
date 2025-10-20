@@ -17,11 +17,11 @@ The `project` command group provides tools for creating and managing project-lev
 
 Generate a project file from a PRIDE project accession and SDRF metadata.
 
-### Description
+### Description {#create-description}
 
 Creates a comprehensive `project.json` file by combining metadata from the PRIDE Archive with sample information from an SDRF file. This command automatically fetches project details, publication information, and experimental metadata from PRIDE.
 
-### Parameters
+### Parameters {#create-parameters}
 
 | Parameter             | Type   | Required | Default | Description                                |
 | --------------------- | ------ | -------- | ------- | ------------------------------------------ |
@@ -32,7 +32,7 @@ Creates a comprehensive `project.json` file by combining metadata from the PRIDE
 | `--software-version`  | String | No       | -       | Software version used to generate the data |
 | `--delete-existing`   | Flag   | No       | False   | Delete existing files in the output folder |
 
-### Usage Examples
+### Usage Examples {#create-examples}
 
 #### Basic Example
 
@@ -140,7 +140,7 @@ The command integrates metadata from multiple sources:
 
 - **Solution**: Ensure SDRF file is correctly formatted and sample names match your data
 
-### Best Practices
+### Best Practices {#create-best-practices}
 
 - Run this command at the beginning of data processing to establish provenance
 - Include software name and version for reproducibility
@@ -148,7 +148,7 @@ The command integrates metadata from multiple sources:
 - Keep the project.json file with your processed data
 - Use `--delete-existing` flag carefully to avoid accidental data loss
 
-### Validation
+### Validation {#create-validation}
 
 After creating the project file, validate it:
 
@@ -169,11 +169,11 @@ ls -lh ./project_metadata/*.sdrf.tsv
 
 Attach additional files to an existing project metadata file.
 
-### Description
+### Description {#attach-description}
 
 Adds references to data files in the project.json metadata. This command is useful for tracking all files associated with a project.
 
-### Parameters
+### Parameters {#attach-parameters}
 
 | Parameter            | Type   | Required | Default | Description                                                                        |
 | -------------------- | ------ | -------- | ------- | ---------------------------------------------------------------------------------- |
@@ -184,7 +184,7 @@ Adds references to data files in the project.json metadata. This command is usef
 | `--partitions`       | String | No       | -       | Fields used for splitting files, separated by comma                                |
 | `--replace-existing` | Flag   | No       | False   | Whether to delete old files                                                        |
 
-### Usage Examples
+### Usage Examples {#attach-examples}
 
 #### Attach PSM File
 
@@ -272,7 +272,7 @@ Supported file category values:
 
 The command updates the project.json file by adding a file entry to the appropriate section based on the category.
 
-### Best Practices
+### Best Practices {#attach-best-practices}
 
 - Attach files immediately after creating them to maintain accurate file tracking
 - Use correct file categories for proper organization

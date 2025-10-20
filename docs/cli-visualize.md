@@ -22,11 +22,11 @@ All visualization commands are accessed through the `plot` subcommand:
 
 Plot peptides by condition in label-free quantification (LFQ) experiments.
 
-### Description
+### Description {#psm-peptides-description}
 
 Creates a visualization showing the distribution of identified peptides across different experimental conditions. This plot helps assess data quality and completeness across samples.
 
-### Parameters
+### Parameters {#psm-peptides-parameters}
 
 | Parameter            | Type | Required | Default | Description                        |
 | -------------------- | ---- | -------- | ------- | ---------------------------------- |
@@ -34,9 +34,9 @@ Creates a visualization showing the distribution of identified peptides across d
 | `--sdrf-path`        | Path | Yes      | -       | SDRF file path for metadata        |
 | `--save-path`        | Path | Yes      | -       | Output image path (e.g., plot.svg) |
 
-### Usage Examples
+### Usage Examples {#psm-peptides-examples}
 
-#### Basic Example
+#### Basic Example {#psm-peptides-example-basic}
 
 ```bash
 quantmsioc visualize plot psm-peptides \
@@ -45,7 +45,7 @@ quantmsioc visualize plot psm-peptides \
     --save-path ./plots/peptides_by_condition.svg
 ```
 
-#### Generate PDF Output
+#### Generate PDF Output {#psm-peptides-example-pdf}
 
 ```bash
 quantmsioc visualize plot psm-peptides \
@@ -54,7 +54,7 @@ quantmsioc visualize plot psm-peptides \
     --save-path ./plots/peptides_by_condition.pdf
 ```
 
-### Output
+### Output {#psm-peptides-output}
 
 - **Format**: SVG or PDF (based on file extension in `--save-path`)
 - **Content**: Bar plot showing peptide counts per condition
@@ -62,13 +62,13 @@ quantmsioc visualize plot psm-peptides \
   - X-axis: Experimental conditions
   - Y-axis: Number of identified peptides
 
-### Interpretation
+### Interpretation {#psm-peptides-interpretation}
 
 - **High variation**: May indicate batch effects or quality issues
 - **Low counts**: May suggest technical problems with specific samples
 - **Consistent counts**: Indicates good data quality and reproducibility
 
-### Best Practices
+### Best Practices {#psm-peptides-best-practices}
 
 - Use SVG format for publications (scalable vector graphics)
 - Verify SDRF metadata correctly defines experimental conditions
@@ -80,11 +80,11 @@ quantmsioc visualize plot psm-peptides \
 
 Plot the distribution of iBAQ (intensity-Based Absolute Quantification) values.
 
-### Description
+### Description {#ibaq-distribution-description}
 
 Creates a histogram or density plot showing the distribution of iBAQ values across proteins. Useful for quality control and understanding the dynamic range of protein quantification.
 
-### Parameters
+### Parameters {#ibaq-distribution-parameters}
 
 | Parameter         | Type   | Required | Default | Description                          |
 | ----------------- | ------ | -------- | ------- | ------------------------------------ |
@@ -92,9 +92,9 @@ Creates a histogram or density plot showing the distribution of iBAQ values acro
 | `--save-path`     | Path   | Yes      | -       | Output image path (e.g., plot.svg)   |
 | `--select-column` | String | No       | -       | Specific column in iBAQ file to plot |
 
-### Usage Examples
+### Usage Examples {#ibaq-distribution-examples}
 
-#### Plot All Samples
+#### Plot All Samples {#ibaq-distribution-example-all}
 
 ```bash
 quantmsioc visualize plot ibaq-distribution \
@@ -102,7 +102,7 @@ quantmsioc visualize plot ibaq-distribution \
     --save-path ./plots/ibaq_distribution.svg
 ```
 
-#### Plot Specific Sample
+#### Plot Specific Sample {#ibaq-distribution-example-specific}
 
 ```bash
 quantmsioc visualize plot ibaq-distribution \
@@ -111,7 +111,7 @@ quantmsioc visualize plot ibaq-distribution \
     --save-path ./plots/ibaq_sample001.svg
 ```
 
-### Output
+### Output {#ibaq-distribution-output}
 
 - **Format**: SVG or PDF
 - **Content**: Distribution plot (histogram + kernel density estimate)
@@ -119,13 +119,13 @@ quantmsioc visualize plot ibaq-distribution \
   - X-axis: log10(iBAQ intensity)
   - Y-axis: Density or frequency
 
-### Interpretation
+### Interpretation {#ibaq-distribution-interpretation}
 
 - **Bimodal distribution**: May indicate distinct protein abundance classes
 - **Long tail**: High-abundance proteins (housekeeping, abundant structural proteins)
 - **Narrow range**: Limited dynamic range, possible detection issues
 
-### Best Practices
+### Best Practices {#ibaq-distribution-best-practices}
 
 - Log-transform intensities for better visualization
 - Compare distributions across samples to identify outliers
@@ -137,11 +137,11 @@ quantmsioc visualize plot ibaq-distribution \
 
 Plot Kernel Density Estimation (KDE) of intensity distributions across samples.
 
-### Description
+### Description {#kde-intensity-description}
 
 Creates overlaid KDE plots showing intensity distributions for multiple samples, enabling visual comparison of sample-to-sample variability and batch effects.
 
-### Parameters
+### Parameters {#kde-intensity-parameters}
 
 | Parameter        | Type    | Required | Default | Description                        |
 | ---------------- | ------- | -------- | ------- | ---------------------------------- |
@@ -149,9 +149,9 @@ Creates overlaid KDE plots showing intensity distributions for multiple samples,
 | `--save-path`    | Path    | Yes      | -       | Output image path (e.g., plot.svg) |
 | `--num-samples`  | Integer | No       | 10      | Number of samples to plot          |
 
-### Usage Examples
+### Usage Examples {#kde-intensity-examples}
 
-#### Plot Default Samples
+#### Plot Default Samples {#kde-intensity-example-default}
 
 ```bash
 quantmsioc visualize plot kde-intensity \
@@ -159,7 +159,7 @@ quantmsioc visualize plot kde-intensity \
     --save-path ./plots/intensity_kde.svg
 ```
 
-#### Plot More Samples
+#### Plot More Samples {#kde-intensity-example-more}
 
 ```bash
 quantmsioc visualize plot kde-intensity \
@@ -168,7 +168,7 @@ quantmsioc visualize plot kde-intensity \
     --num-samples 20
 ```
 
-### Output
+### Output {#kde-intensity-output}
 
 - **Format**: SVG or PDF
 - **Content**: Overlaid KDE curves for each sample
@@ -177,13 +177,13 @@ quantmsioc visualize plot kde-intensity \
   - Y-axis: Density
 - **Legend**: Sample identifiers
 
-### Interpretation
+### Interpretation {#kde-intensity-interpretation}
 
 - **Overlapping curves**: Good sample-to-sample consistency
 - **Shifted curves**: Potential batch effects or normalization issues
 - **Different shapes**: Sample-specific technical issues
 
-### Best Practices
+### Best Practices {#kde-intensity-best-practices}
 
 - Limit to 10-20 samples for readability
 - Use this plot to identify samples requiring normalization
@@ -195,11 +195,11 @@ quantmsioc visualize plot kde-intensity \
 
 Plot the distribution of peptides across proteins.
 
-### Description
+### Description {#peptide-distribution-description}
 
 Visualizes how many peptides are identified for each protein, providing insights into protein coverage and identification confidence.
 
-### Parameters
+### Parameters {#peptide-distribution-parameters}
 
 | Parameter        | Type    | Required | Default | Description                        |
 | ---------------- | ------- | -------- | ------- | ---------------------------------- |
@@ -207,9 +207,9 @@ Visualizes how many peptides are identified for each protein, providing insights
 | `--save-path`    | Path    | Yes      | -       | Output image path (e.g., plot.svg) |
 | `--num-samples`  | Integer | No       | 20      | Number of top proteins to display  |
 
-### Usage Examples
+### Usage Examples {#peptide-distribution-examples}
 
-#### Basic Example
+#### Basic Example {#peptide-distribution-example-basic}
 
 ```bash
 quantmsioc visualize plot peptide-distribution \
@@ -217,7 +217,7 @@ quantmsioc visualize plot peptide-distribution \
     --save-path ./plots/peptide_per_protein.svg
 ```
 
-#### Show Top 50 Proteins
+#### Show Top 50 Proteins {#peptide-distribution-example-top50}
 
 ```bash
 quantmsioc visualize plot peptide-distribution \
@@ -226,7 +226,7 @@ quantmsioc visualize plot peptide-distribution \
     --num-samples 50
 ```
 
-### Output
+### Output {#peptide-distribution-output}
 
 - **Format**: SVG or PDF
 - **Content**: Bar plot showing peptide counts per protein
@@ -234,13 +234,13 @@ quantmsioc visualize plot peptide-distribution \
   - X-axis: Protein identifiers (top N by peptide count)
   - Y-axis: Number of identified peptides
 
-### Interpretation
+### Interpretation {#peptide-distribution-interpretation}
 
 - **High peptide counts**: Abundant proteins with good coverage
 - **Single peptide proteins**: May be less confident identifications
 - **Distribution shape**: Reflects proteome complexity
 
-### Best Practices
+### Best Practices {#peptide-distribution-best-practices}
 
 - Focus on top proteins for initial quality assessment
 - Filter single-peptide identifications for high-confidence datasets
@@ -252,11 +252,11 @@ quantmsioc visualize plot peptide-distribution \
 
 Plot box plots of intensity distributions across samples.
 
-### Description
+### Description {#box-intensity-description}
 
 Creates box plots showing the distribution of feature intensities for each sample, ideal for identifying outliers and assessing normalization quality.
 
-### Parameters
+### Parameters {#box-intensity-parameters}
 
 | Parameter        | Type    | Required | Default | Description                        |
 | ---------------- | ------- | -------- | ------- | ---------------------------------- |
@@ -264,9 +264,9 @@ Creates box plots showing the distribution of feature intensities for each sampl
 | `--save-path`    | Path    | Yes      | -       | Output image path (e.g., plot.svg) |
 | `--num-samples`  | Integer | No       | 10      | Number of samples to plot          |
 
-### Usage Examples
+### Usage Examples {#box-intensity-examples}
 
-#### Basic Example
+#### Basic Example {#box-intensity-example-basic}
 
 ```bash
 quantmsioc visualize plot box-intensity \
@@ -274,7 +274,7 @@ quantmsioc visualize plot box-intensity \
     --save-path ./plots/intensity_boxplot.svg
 ```
 
-#### Plot All Samples
+#### Plot All Samples {#box-intensity-example-all}
 
 ```bash
 quantmsioc visualize plot box-intensity \
@@ -283,7 +283,7 @@ quantmsioc visualize plot box-intensity \
     --num-samples 50
 ```
 
-### Output
+### Output {#box-intensity-output}
 
 - **Format**: SVG or PDF
 - **Content**: Box plots for each sample
@@ -292,14 +292,14 @@ quantmsioc visualize plot box-intensity \
   - Y-axis: log10(intensity)
 - **Elements**: Box (IQR), whiskers (1.5×IQR), outliers (points)
 
-### Interpretation
+### Interpretation {#box-intensity-interpretation}
 
 - **Aligned medians**: Good normalization
 - **Similar IQR**: Consistent quantification across samples
 - **Many outliers**: May indicate contamination or technical issues
 - **Different ranges**: Batch effects or loading differences
 
-### Best Practices
+### Best Practices {#box-intensity-best-practices}
 
 - Use this plot to identify samples requiring normalization
 - Check for systematic differences between batches or conditions

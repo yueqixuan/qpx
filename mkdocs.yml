@@ -3,8 +3,7 @@ site_description: Python package documentation for quantmsio - A tool for workin
 site_author: BigBio Team
 
 # Documentation URLs:
-#site_url: https://bigbio.github.io/quantms.io/package/
-site_url: https://shen-yufei.github.io/quantms.io/
+site_url: https://bigbio.github.io/quantms.io/package/
 
 repo_name: bigbio/quantms.io
 repo_url: https://github.com/bigbio/quantms.io

@@ -25,30 +25,36 @@ def convert():
 )
 @click.option(
     "--msms-file",
-    help="MaxQuant msms.txt file to extract peptide information",
+    help="MaxQuant msms.txt file",
     required=True,
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
 )
 @click.option(
     "--output-folder",
-    help="Output directory for generated files",
+    help="Output folder",
     required=True,
     type=click.Path(file_okay=False, path_type=Path),
 )
 @click.option(
     "--batch-size",
-    help="Read batch size",
-    default=1000000,
+    help="Batch size",
+    default=100000,
     type=int,
 )
 @click.option(
     "--output-prefix",
-    help="Prefix for output files",
+    help="Output file prefix",
 )
 @click.option(
     "--spectral-data",
-    help="Spectral data fields (optional)",
+    help="Include spectral data fields",
     is_flag=True,
+)
+@click.option(
+    "--n-workers",
+    help="Number of parallel workers",
+    default=8,
+    type=int,
 )
 @click.option("--verbose", help="Enable verbose logging", is_flag=True)
 def convert_maxquant_psm_cmd(
@@ -57,6 +63,7 @@ def convert_maxquant_psm_cmd(
     batch_size: int,
     output_prefix: Optional[str],
     spectral_data: bool = False,
+    n_workers: Optional[int] = None,
     verbose: bool = False,
 ):
     """
@@ -66,10 +73,9 @@ def convert_maxquant_psm_cmd(
     parquet format for PSM data.
     
     Example:
-        quantmsio convert maxquant-psm \\
+        quantmsioc convert maxquant-psm \\
             --msms-file msms.txt \\
-            --output-folder ./output \\
-            --batch-size 1000000
+            --output-folder ./output
     """
     logger = get_logger("quantmsio.commands.maxquant")
     if verbose:
@@ -92,9 +98,15 @@ def convert_maxquant_psm_cmd(
         logger.info("Initializing MaxQuant PSM converter...")
         processor = MaxQuant(spectral_data)
 
-        logger.info(f"Starting PSM conversion (batch size: {batch_size:,})...")
+        logger.info(
+            f"Starting PSM conversion with parallel processing (batch size: {batch_size:,}, workers: {n_workers})..."
+        )
+
         processor.process_psm_file(
-            msms_path=str(msms_file), output_path=str(output_path), chunksize=batch_size
+            msms_path=str(msms_file),
+            output_path=str(output_path),
+            chunksize=batch_size,
+            n_workers=n_workers,
         )
         logger.info(f"PSM file successfully saved to: {output_path}")
 
@@ -109,45 +121,48 @@ def convert_maxquant_psm_cmd(
 )
 @click.option(
     "--evidence-file",
-    help="MaxQuant evidence.txt file to extract peptide information",
+    help="MaxQuant evidence.txt file",
     required=True,
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
 )
 @click.option(
     "--sdrf-file",
-    help="SDRF file needed to extract metadata",
+    help="SDRF metadata file",
     required=True,
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
 )
 @click.option(
     "--output-folder",
-    help="Output directory for generated files",
+    help="Output folder",
     required=True,
     type=click.Path(file_okay=False, path_type=Path),
 )
 @click.option(
     "--protein-file",
-    help="Protein file with specific requirements",
+    help="Protein list file for filtering",
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
 )
 @click.option(
     "--protein-groups-file",
-    help="MaxQuant proteinGroups.txt file for Q-value mapping (optional)",
+    help="MaxQuant proteinGroups.txt file",
+    required=True,
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
 )
 @click.option(
-    "--partitions",
-    help="Field(s) used for splitting files (comma-separated)",
-)
-@click.option(
     "--batch-size",
-    help="Read batch size",
-    default=1000000,
+    help="Batch size",
+    default=100000,
     type=int,
 )
 @click.option(
     "--output-prefix",
-    help="Prefix for output files",
+    help="Output file prefix",
+)
+@click.option(
+    "--n-workers",
+    help="Number of parallel workers",
+    default=8,
+    type=int,
 )
 @click.option("--verbose", help="Enable verbose logging", is_flag=True)
 def convert_maxquant_feature_cmd(
@@ -155,10 +170,10 @@ def convert_maxquant_feature_cmd(
     sdrf_file: Path,
     output_folder: Path,
     protein_file: Optional[Path],
-    protein_groups_file: Optional[Path],
-    partitions: Optional[str],
+    protein_groups_file: Path,
     batch_size: int,
     output_prefix: Optional[str],
+    n_workers: Optional[int] = None,
     verbose: bool = False,
 ):
     """
@@ -168,12 +183,11 @@ def convert_maxquant_feature_cmd(
     parquet format for feature data, using metadata from an SDRF file.
 
     Example:
-        quantmsio convert maxquant-feature \\
+        quantmsioc convert maxquant-feature \\
             --evidence-file evidence.txt \\
             --sdrf-file data.sdrf.tsv \\
-            --output-folder ./output \\
             --protein-groups-file proteinGroups.txt \\
-            --batch-size 1000000
+            --output-folder ./output
     """
     logger = get_logger("quantmsio.commands.maxquant")
     if verbose:
@@ -196,32 +210,24 @@ def convert_maxquant_feature_cmd(
         logger.info("Initializing MaxQuant feature converter...")
         processor = MaxQuant()
 
-        if not partitions:
-            logger.info(f"Starting feature conversion (batch size: {batch_size:,})...")
+        logger.info(
+            f"Starting feature conversion (batch size: {batch_size:,}, workers: {n_workers})..."
+        )
 
-            if protein_groups_file:
-                logger.info(
-                    f"Using proteinGroups file for Q-value mapping: {protein_groups_file}"
-                )
-                processor._init_protein_group_qvalue_mapping(str(protein_groups_file))
-            else:
-                logger.info(
-                    "No proteinGroups file provided, auto-detection will be used"
-                )
+        logger.info(
+            f"Using proteinGroups file for Q-value mapping: {protein_groups_file}"
+        )
+        processor._init_protein_group_qvalue_mapping(str(protein_groups_file))
 
-            processor.process_feature_file(
-                evidence_path=str(evidence_file),
-                output_path=str(output_path),
-                sdrf_path=str(sdrf_file),
-                protein_file=str(protein_file) if protein_file else None,
-                chunksize=batch_size,
-            )
-            logger.info(f"Feature file successfully saved to: {output_path}")
-        else:
-            logger.error("Partitioned conversion not implemented")
-            raise click.ClickException(
-                "Partitioned conversion feature is not yet available. Please use the standard conversion without --partitions."
-            )
+        processor.process_feature_file(
+            evidence_path=str(evidence_file),
+            output_path=str(output_path),
+            sdrf_path=str(sdrf_file),
+            protein_file=str(protein_file) if protein_file else None,
+            chunksize=batch_size,
+            n_workers=n_workers,
+        )
+        logger.info(f"Feature file successfully saved to: {output_path}")
 
     except Exception as e:
         logger.error(f"Error in MaxQuant feature conversion: {str(e)}", exc_info=True)
@@ -240,47 +246,58 @@ def convert_maxquant_feature_cmd(
 )
 @click.option(
     "--sdrf-file",
-    help="SDRF file needed to extract metadata",
+    help="SDRF metadata file",
+    required=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+)
+@click.option(
+    "--evidence-file",
+    help="MaxQuant evidence.txt file",
     required=True,
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
 )
 @click.option(
     "--output-folder",
-    help="Output directory for generated files",
+    help="Output folder",
     required=True,
     type=click.Path(file_okay=False, path_type=Path),
 )
 @click.option(
     "--batch-size",
-    help="Batch size (for logging purposes only)",
-    default=1000000,
+    help="Batch size",
+    default=10000,
     type=int,
 )
 @click.option(
     "--output-prefix",
-    help="Prefix for output files (will be appended with .pg.parquet)",
+    help="Output file prefix",
+)
+@click.option(
+    "--n-workers",
+    help="Number of parallel workers",
+    default=8,
+    type=int,
 )
 @click.option("--verbose", help="Enable verbose logging", is_flag=True)
 def convert_maxquant_pg_cmd(
     protein_groups_file: Path,
     sdrf_file: Path,
+    evidence_file: Path,
     output_folder: Path,
     batch_size: int,
     output_prefix: Optional[str],
+    n_workers: Optional[int] = None,
     verbose: bool = False,
 ):
     """
-    Convert MaxQuant protein groups from proteinGroups.txt to parquet format.
-
-    This command takes a MaxQuant proteinGroups.txt file and converts it to the quantms.io
-    parquet format for protein groups, using metadata from an SDRF file.
+    Convert MaxQuant proteinGroups.txt to quantms.io parquet format.
 
     Example:
-        quantmsio convert maxquant-pg \\
+        quantmsioc convert maxquant-pg \\
             --protein-groups-file proteinGroups.txt \\
             --sdrf-file data.sdrf.tsv \\
-            --output-folder ./output \\
-            --batch-size 1000000
+            --evidence-file evidence.txt \\
+            --output-folder ./output
     """
     logger = get_logger("quantmsio.commands.maxquant")
     if verbose:
@@ -300,16 +317,20 @@ def convert_maxquant_pg_cmd(
         output_path = output_folder / filename
         logger.info(f"Will save protein groups file as: {filename}")
 
-        logger.info("Initializing MaxQuant protein groups converter...")
+        logger.info("Initializing MaxQuant converter...")
         processor = MaxQuant()
 
         logger.info(
-            f"Starting protein groups conversion (batch size: {batch_size:,})..."
+            f"Starting conversion (batch size: {batch_size:,}, workers: {n_workers})..."
         )
+
         processor.process_pg_file(
             protein_groups_path=str(protein_groups_file),
             output_path=str(output_path),
             sdrf_path=str(sdrf_file),
+            evidence_path=str(evidence_file),
+            chunksize=batch_size,
+            n_workers=n_workers,
         )
         logger.info(f"Protein groups file successfully saved to: {output_path}")
 

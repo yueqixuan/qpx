@@ -127,4 +127,4 @@ def generate_report_cmd(
     generator.generate_html_report(output_file=output_html)
     click.echo(f"HTML report: {output_html}")
 
-    click.echo("Report generation successfully")
+    click.echo("Report generation completed successfully")
